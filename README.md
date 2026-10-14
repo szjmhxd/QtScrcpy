@@ -353,3 +353,7 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/QtScrcpy/organization/7/website"><img src="https://opencollective.com/QtScrcpy/organization/7/avatar.svg"></a>
 <a href="https://opencollective.com/QtScrcpy/organization/8/website"><img src="https://opencollective.com/QtScrcpy/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/QtScrcpy/organization/9/website"><img src="https://opencollective.com/QtScrcpy/organization/9/avatar.svg"></a>
+
+
+## pinch-zoom fork
+Ctrl+左键拖动 = 双指捏合缩放（源自 scrcpy 虚拟手指移植）。Shift+拖动 = 纵向滑动，Ctrl+Shift+拖动 = 横向滑动。
