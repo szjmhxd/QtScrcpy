@@ -1,6 +1,7 @@
 name: Windows
 # 触发规则详解 https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
-on: 
+on:
+  workflow_dispatch:
   push:
     paths:
       - 'QtScrcpy/**'
@@ -67,8 +68,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          submodules: 'true'
-          ssh-key: ${{ secrets.BOT_SSH_KEY }}
+          submodules: false
+      - name: Fetch QtScrcpyCore from fork (pinch-zoom)
+        shell: bash
+        run: |
+          curl -fsSL -o core.zip "https://api.github.com/repos/${GITHUB_REPOSITORY_OWNER}/QtScrcpyCore/zipball/pinch-zoom" -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GITHUB_TOKEN}"
+          rm -rf QtScrcpy/QtScrcpyCore && mkdir -p QtScrcpy/QtScrcpyCore
+          mkdir coretmp && unzip -q core.zip -d coretmp
+          cp -a coretmp/QtScrcpyCore-*/. QtScrcpy/QtScrcpyCore/
+          rm -rf coretmp core.zip
+          grep -c sendVirtualFingerEvent QtScrcpy/QtScrcpyCore/src/device/controller/inputconvert/inputconvertnormal.cpp
+          echo 9.9.9 > QtScrcpy/appversion
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       # 编译msvc
       - name: Build MSVC
         # shell介绍 https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#using-a-specific-shell
@@ -77,8 +89,7 @@ jobs:
           ENV_VCVARSALL: ${{ env.vcvarsall-path }}
           ENV_QT_PATH: ${{ env.qt-install-path }}
         run: |
-          call python ci\generate-version.py
-          call "ci\win\build_for_win.bat" RelWithDebInfo ${{ matrix.msvc-arch }}
+                    call "ci\win\build_for_win.bat" RelWithDebInfo ${{ matrix.msvc-arch }}
       # 获取ref最后一个/后的内容
       - name: Get the version
         shell: bash
